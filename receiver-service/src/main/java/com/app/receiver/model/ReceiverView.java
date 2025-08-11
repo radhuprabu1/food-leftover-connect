@@ -50,4 +50,8 @@ public class ReceiverView {
 	 * about new food listings.
 	 */
 	private Double notificationRadiusKm = AppUtilConstants.SEARCH_RADIUS_KM;
+	
+	private String address;
+	
+	private String contactNumber;
 }

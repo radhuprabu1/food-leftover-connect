@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
  * @author Radhakrishnan
  * @version 1.0
  */
-@RestController
+@RestController("foodAdminController")
 @RequestMapping("/api/admin/food-listings")
 @RequiredArgsConstructor
 public class AdminController {

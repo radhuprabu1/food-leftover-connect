@@ -38,7 +38,7 @@ public class FoodListingView {
     private Long donorId;
     
     private String foodName;
-    private int quantity;
+    private Integer quantity;
     private Double donorLatitude;
     private Double donorLongitude;
     

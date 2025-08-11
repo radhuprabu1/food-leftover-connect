@@ -12,13 +12,20 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class MessagingConfig {
 
-    // This bean defines how messages are converted to/from JSON.
+    /**
+     * This bean defines how messages are converted to/from JSON
+     * @return
+     */
     @Bean
     public MessageConverter jackson2MessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    // This configures the listener side to use our JSON converter.
+    /**
+     * This configures the listener side to use our JSON converter
+     * @param connectionFactory
+     * @return
+     */
     @Bean
     @Primary
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
@@ -28,7 +35,11 @@ public class MessagingConfig {
         return factory;
     }
 
-    // This configures the sender side (RabbitTemplate) to use our JSON converter.
+    /**
+     * This configures the sender side (RabbitTemplate) to use our JSON converter.
+     * @param connectionFactory
+     * @return
+     */
     @Bean
     @Primary
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {

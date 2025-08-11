@@ -51,8 +51,6 @@ public final class UserMapper {
 		User user = new User();
 		user.setName(request.name());
 		user.setEmail(request.email());
-		// In a real application, this password would be hashed using a PasswordEncoder.
-		// For now, we store it as plain text for simplicity.
 		user.setPassword(request.password());
 		user.setAddress(request.address());
 		user.setContactNumber(request.contactNumber());
