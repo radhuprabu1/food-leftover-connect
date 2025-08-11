@@ -1,0 +1,16 @@
+# Compiled output
+target/
+**/target/
+
+# IDE files (Eclipse/STS/IntelliJ)
+.project
+.classpath
+.settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Log files
+*.log
+logs/
