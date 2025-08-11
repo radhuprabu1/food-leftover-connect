@@ -48,7 +48,7 @@ public class ReceiverController {
 		receiverService.processReceiverResponse(foodListingId, receiverId, response);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	/**
 	 * API endpoint for a receiver to get all available food listings within their vicinity.
 	 *
@@ -57,11 +57,9 @@ public class ReceiverController {
 	 */
 	@GetMapping("/listings/available")
 	public ResponseEntity<List<FoodListingView>> getAvailableListings(@RequestHeader("X-User-Id") Long receiverId) {
-	    List<FoodListingView> availableListings = receiverService.getAvailableFoodListings(receiverId);
-	    return ResponseEntity.ok(availableListings);
+		List<FoodListingView> availableListings = receiverService.getAvailableFoodListings(receiverId);
+		return ResponseEntity.ok(availableListings);
 	}
-	
-	// Inside ReceiverController.java
 
 	/**
 	 * API endpoint for a receiver to confirm they have collected a food donation.
@@ -72,13 +70,11 @@ public class ReceiverController {
 	 */
 	@PostMapping("/listings/{foodListingId}/collect")
 	public ResponseEntity<Void> markAsCollected(
-	        @PathVariable Long foodListingId,
-	        @RequestHeader("X-User-Id") Long receiverId) {
-	    receiverService.confirmFoodCollection(foodListingId, receiverId);
-	    return ResponseEntity.ok().build();
+			@PathVariable Long foodListingId,
+			@RequestHeader("X-User-Id") Long receiverId) {
+		receiverService.confirmFoodCollection(foodListingId, receiverId);
+		return ResponseEntity.ok().build();
 	}
-	
-	// Inside ReceiverController.java
 
 	/**
 	 * API endpoint for a receiver to cancel their acceptance of a food listing.
@@ -89,9 +85,9 @@ public class ReceiverController {
 	 */
 	@DeleteMapping("/listings/{foodListingId}/acceptance")
 	public ResponseEntity<Void> cancelAcceptedListing(
-	        @PathVariable Long foodListingId,
-	        @RequestHeader("X-User-Id") Long receiverId) {
-	    receiverService.cancelAcceptedListing(foodListingId, receiverId);
-	    return ResponseEntity.noContent().build();
+			@PathVariable Long foodListingId,
+			@RequestHeader("X-User-Id") Long receiverId) {
+		receiverService.cancelAcceptedListing(foodListingId, receiverId);
+		return ResponseEntity.noContent().build();
 	}
 }

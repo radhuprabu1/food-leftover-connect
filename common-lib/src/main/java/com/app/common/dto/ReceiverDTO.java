@@ -11,5 +11,7 @@ package com.app.common.dto;
 public record ReceiverDTO(
     Long id,
     String name,
-    LocationDTO location
+    LocationDTO location,
+    String address,
+    String contactNumber
 ) {}

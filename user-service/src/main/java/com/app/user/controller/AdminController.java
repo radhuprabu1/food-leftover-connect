@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Radhakrishnan
  * @version 1.0
  */
-@RestController
+@RestController("userAdminController")
 @RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
 public class AdminController {

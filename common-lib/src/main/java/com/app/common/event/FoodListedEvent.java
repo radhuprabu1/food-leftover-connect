@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public record FoodListedEvent(
 		Long foodListingId,
 		String foodName,
-		int quantity,
+		Integer quantity,
 		DonorDTO donor,
 		LocalDateTime expiryDateTime
 		) {}

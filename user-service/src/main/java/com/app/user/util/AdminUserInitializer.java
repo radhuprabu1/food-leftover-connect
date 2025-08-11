@@ -22,7 +22,6 @@ public class AdminUserInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AdminUserInitializer.class);
     private final UserRepository userRepository;
-    // Inject the PasswordEncoder later when security is re-enabled
 
     /**
      * This method is executed automatically by Spring Boot after the application context is loaded.
