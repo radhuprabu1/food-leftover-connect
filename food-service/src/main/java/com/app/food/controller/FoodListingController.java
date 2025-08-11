@@ -49,8 +49,6 @@ public class FoodListingController {
 		return new ResponseEntity<>(listedFood, HttpStatus.CREATED);
 	}
 	
-	// Inside FoodListingController.java
-
 	/**
 	 * API endpoint for a donor to cancel their own food listing.
 	 */
