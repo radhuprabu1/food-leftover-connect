@@ -11,5 +11,9 @@ public enum Role {
 	/**
 	 * Represents a user or organization (e.g., NGO) that receives food donations.
 	 */
-	ROLE_RECEIVER
+	ROLE_RECEIVER,
+	/**
+	 * User Admin has superior authority over the application
+	 */
+	ROLE_ADMIN
 }
