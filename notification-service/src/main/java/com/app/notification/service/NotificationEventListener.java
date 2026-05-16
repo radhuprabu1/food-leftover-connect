@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import com.app.common.event.FindNearbyReceiversRequest;
 import com.app.common.event.FoodAcceptedEvent;
 import com.app.common.event.FoodCollectedEvent;
 import com.app.common.event.FoodListedEvent;
@@ -13,6 +14,7 @@ import com.app.common.event.FoodListingCancellationByReceiverEvent;
 import com.app.common.event.FoodListingCancelledEvent;
 import com.app.common.event.FoodListingRemovedEvent;
 import com.app.common.event.MarkAsCollectedCommand;
+import com.app.common.event.NearbyReceiversResponse;
 import com.app.common.event.SendFoodAlertEvent;
 import com.app.common.event.UserRegisteredEvent;
 
@@ -118,4 +120,26 @@ public class NotificationEventListener {
 	    log.info("NOTIFICATION-SERVICE [ACTION]: Receiver {} cancelled acceptance of listing {}. Simulating notification to donor.",
 	            event.receiverId(), event.foodListingId());
 	}
+	
+    /**
+     * Handles the request to find nearby receivers.
+     * The notification-service does not need to act on this, so we just log and ignore.
+     *
+     * @param request The request to find receivers.
+     */
+    @RabbitHandler
+    public void handleFindNearbyReceiversRequest(FindNearbyReceiversRequest request) {
+        log.info("NOTIFICATION-SERVICE: Ignoring FindNearbyReceiversRequest with correlation ID {}.", request.correlationId());
+    }
+
+    /**
+     * Handles the response containing nearby receivers.
+     * The notification-service does not need to act on this, so we just log and ignore.
+     *
+     * @param response The response containing the list of receivers.
+     */
+    @RabbitHandler
+    public void handleNearbyReceiversResponse(NearbyReceiversResponse response) {
+        log.info("NOTIFICATION-SERVICE: Ignoring NearbyReceiversResponse with correlation ID {}.", response.correlationId());
+    }
 }

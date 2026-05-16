@@ -141,8 +141,6 @@ public class FoodListingService {
 		log.info("Successfully updated food listing {} to ACCEPTED status for receiver {}.", foodListing.getId(), event.receiver().id());
 	}
 	
-	// Inside FoodListingService.java
-
 	@Transactional
 	public FoodListing markFoodAsCollected(Long foodListingId, Long receiverId) {
 	    log.info("Attempting to mark food listing {} as collected by receiver {}", foodListingId, receiverId);
@@ -173,8 +171,6 @@ public class FoodListingService {
 	    return updatedListing;
 	}
 	
-	// ... (existing methods)
-
 	/**
 	 * Finds and permanently deletes all completed (collected) or expired food listings.
 	 * For each deleted listing, it publishes a {@link FoodListingRemovedEvent} to ensure

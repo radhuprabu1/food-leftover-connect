@@ -4,7 +4,7 @@ public class AppUtilConstants {
 	
 	private AppUtilConstants() {}
 	
-	public static final double SEARCH_RADIUS_KM = 5.0;
+	public static final Double SEARCH_RADIUS_KM = 5.0;
 
 
 }

@@ -66,7 +66,8 @@ public class ReceiverService {
 			ReceiverDTO receiverDTO = new ReceiverDTO(
 					receiver.getId(),
 					receiver.getName(),
-					new LocationDTO(receiver.getLatitude(), receiver.getLongitude())
+					new LocationDTO(receiver.getLatitude(), receiver.getLongitude()),
+					receiver.getAddress(), receiver.getContactNumber()
 					);
 
 			log.info("Receiver {} ACCEPTED food listing {}. Publishing event.", receiverId, foodListingId);
@@ -93,7 +94,7 @@ public class ReceiverService {
 
 	/**
 	 * Finds all available food listings and filters them to show only those
-	 * within a 10km radius of the specified receiver.
+	 * within a 5 km radius of the specified receiver.
 	 *
 	 * @param receiverId The ID of the receiver making the request.
 	 * @return A list of {@link FoodListingView} objects that are available and nearby.
@@ -110,7 +111,7 @@ public class ReceiverService {
 		// 3. Filter the listings in memory to find ones within the radius.
 		return allAvailableListings.stream()
 				.filter(listing -> {
-					double distance = ReceiverUtils.calculateDistance(
+					Double distance = ReceiverUtils.calculateDistance(
 							receiver.getLatitude(), receiver.getLongitude(),
 							listing.getDonorLatitude(), listing.getDonorLongitude()
 							);

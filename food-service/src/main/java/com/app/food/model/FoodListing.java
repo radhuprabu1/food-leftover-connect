@@ -59,7 +59,7 @@ public class FoodListing {
     /**
      * An integer representing the estimated number of people this food can serve.
      */
-    private int quantity;
+    private Integer quantity;
 
     /**
      * The timestamp when the food donation expires and is no longer available.

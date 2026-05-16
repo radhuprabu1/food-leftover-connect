@@ -1,6 +1,7 @@
 package com.app.receiver.event;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Service;
 import com.app.common.config.AppUtilConstants;
 import com.app.common.config.MessagingConfigConstants;
 import com.app.common.dto.LocationDTO;
+import com.app.common.dto.ReceiverDTO;
+import com.app.common.event.FindNearbyReceiversRequest;
 import com.app.common.event.FoodAcceptedEvent;
 import com.app.common.event.FoodListedEvent;
 import com.app.common.event.FoodListingCancellationByReceiverEvent;
 import com.app.common.event.FoodListingCancelledEvent;
 import com.app.common.event.FoodListingRemovedEvent;
 import com.app.common.event.MarkAsCollectedCommand;
+import com.app.common.event.NearbyReceiversResponse;
 import com.app.common.event.SendFoodAlertEvent;
 import com.app.common.event.UserRegisteredEvent;
 import com.app.receiver.model.FoodListingView;
@@ -64,7 +68,7 @@ public class FoodEventListener {
 			receiverView.setName(event.user().name());
 			receiverView.setLatitude(event.user().location().latitude());
 			receiverView.setLongitude(event.user().location().longitude());
-			// A default radius could be set here if desired
+			receiverView.setNotificationRadiusKm(AppUtilConstants.SEARCH_RADIUS_KM);
 			receiverViewRepository.save(receiverView);
 			log.info("Saved new receiver's view with ID: {}", receiverView.getId());
 		}
@@ -96,7 +100,7 @@ public class FoodEventListener {
 		List<ReceiverView> allReceivers = receiverViewRepository.findAll();
 
 		for (ReceiverView receiver : allReceivers) {
-			double distance = ReceiverUtils.calculateDistance(
+			Double distance = ReceiverUtils.calculateDistance(
 					donorLocation.latitude(), donorLocation.longitude(),
 					receiver.getLatitude(), receiver.getLongitude()
 					);
@@ -155,7 +159,6 @@ public class FoodEventListener {
 		log.info("Cleanup complete for food listing ID: {}", event.foodListingId());
 	}
 
-	// Inside FoodEventListener.java in receiver-service
 	@RabbitHandler
 	public void handleFoodListingCancellationByReceiverEvent(FoodListingCancellationByReceiverEvent event) {
 		log.info("RECEIVER-SERVICE: Ignoring own cancellation event for listing {}.", event.foodListingId());
@@ -169,4 +172,53 @@ public class FoodEventListener {
 		log.warn("RECEIVER-SERVICE: Received cancellation for food listing {}. Notifying relevant receiver {}.",
 				event.foodListingId(), event.receiverId());
 	}
+
+	/**
+	 * Handles a request to find nearby receivers.
+	 * This method performs the geospatial search on its local data and publishes the results.
+	 *
+	 * @param request The request event containing the location and radius to search.
+	 */
+	@RabbitHandler
+	public void handleFindNearbyReceiversRequest(FindNearbyReceiversRequest request) {
+		log.info("RECEIVER-SERVICE: Received request to find receivers near {}. Correlation ID: {}",
+				request.location(), request.correlationId());
+
+		List<ReceiverView> allReceivers = receiverViewRepository.findAll();
+
+		// Perform the search
+		List<ReceiverDTO> nearbyReceivers = allReceivers.stream()
+				.filter(receiver -> {
+					Double distance = ReceiverUtils.calculateDistance(
+							request.location().latitude(), request.location().longitude(),
+							receiver.getLatitude(), receiver.getLongitude()
+							);
+					return distance <= request.radiusKm();
+				})
+				.map(receiverView -> new ReceiverDTO( // Map to DTO
+						receiverView.getId(),
+						receiverView.getName(),
+						new LocationDTO(receiverView.getLatitude(), receiverView.getLongitude()),
+						receiverView.getAddress(), receiverView.getContactNumber()
+						))
+				.collect(Collectors.toList());
+
+		log.info("Found {} nearby receivers. Publishing response. Correlation ID: {}",
+				nearbyReceivers.size(), request.correlationId());
+
+		// Create the response event
+		NearbyReceiversResponse responseEvent = new NearbyReceiversResponse(request.correlationId(), nearbyReceivers);
+
+		// Publish the response back to the main exchange
+		rabbitTemplate.convertAndSend(MessagingConfigConstants.FOOD_EVENTS_EXCHANGE, "", responseEvent);
+	}
+	
+    /**
+     * Handles the response containing nearby receivers.
+     * This service is the original publisher, so it just ignores its own message.
+     */
+    @RabbitHandler
+    public void handleNearbyReceiversResponse(NearbyReceiversResponse response) {
+        log.info("RECEIVER-SERVICE: Ignoring own NearbyReceiversResponse with correlation ID {}.", response.correlationId());
+    }
 }
